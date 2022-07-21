@@ -13,13 +13,23 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class Util {
-
     public static Connection connection;
     private static SessionFactory sessionFactory;
 
-    public static Connection getConnection() throws SQLException {
-        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test?&serverTimeZone=Europe/Moscow&useSSL=false&allowPublicKeyRetrieval=true","root","admin");
+    private static final String Connection_Url = "jdbc:mysql://localhost:3306/test?" +
+            "&serverTimeZone=Europe/Moscow&useSSL=false&allowPublicKeyRetrieval=true";
+    private static final String User = "root";
+    private static final String Password = "admin";
+    public static Connection getConnection() {
+
+    try
+    {
+        Connection connection = DriverManager.getConnection( Connection_Url,User,Password);
         connection.setAutoCommit(false);
+        return connection;
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
         return connection;
     }
 
