@@ -9,12 +9,9 @@ import org.hibernate.cfg.Environment;
 import javax.imageio.spi.ServiceRegistry;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.Properties;
 
 public class Util {
-    public static Connection connection;
-    private static SessionFactory sessionFactory;
 
     private static final String Connection_Url = "jdbc:mysql://localhost:3306/test?" +
             "&serverTimeZone=Europe/Moscow&useSSL=false&allowPublicKeyRetrieval=true";
@@ -22,23 +19,27 @@ public class Util {
     private static final String Password = "admin";
     public static Connection getConnection() {
 
-    try
-    {
-        Connection connection = DriverManager.getConnection( Connection_Url,User,Password);
-        connection.setAutoCommit(false);
+        Connection connection = null;
+
+        try
+        {
+            connection = DriverManager.getConnection( Connection_Url,User,Password);
+            connection.setAutoCommit(false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return connection;
-    } catch (Exception e) {
-        e.printStackTrace();
     }
-        return connection;
-    }
+
 
     public static SessionFactory getSessionFactory() {
 
+        SessionFactory sessionFactory = null;
+
         if (sessionFactory == null) {
             try {
-                Configuration configuration = new Configuration();
-                Properties properties = new Properties();
+                Configuration configuration = new Configuration().configure();
+                Properties properties = configuration.getProperties();
 
                 properties.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
                 properties.put(Environment.URL, "jdbc:mysql://localhost:3306/test?useLegacyDatetimeCode=false&serverTimeZone=Europe/Moscow&useSSL=false&allowPublicKeyRetrieval=true");
@@ -60,8 +61,5 @@ public class Util {
             }
         }
         return  sessionFactory;
-    }
-
-    public Util() throws SQLException {
     }
 }

@@ -18,14 +18,15 @@ public class UserDaoJDBCImpl implements UserDao {
     private final static String sqlCommandTruncate = "TRUNCATE TABLE users";
     private final static String sqlCommandDeleteWhere = "DELETE FROM users WHERE id = ";
     private static Transaction transaction = null;
-    private Connection connection = Util.getConnection();
+    private Connection connection = null;
 
     public UserDaoJDBCImpl() {
 
     }
 
     public void createUsersTable() {
-        try (Statement statement = connection.createStatement()) {
+        try (Connection connection = Util.getConnection()) {
+            Statement statement = connection.createStatement();
             statement.execute(sqlCommandCreate);
             connection.commit();
         } catch (SQLException e) {
@@ -39,8 +40,8 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void dropUsersTable()  {
-        try (Statement statement = connection.createStatement()) {
-
+        try (Connection connection = Util.getConnection()) {
+            Statement statement = connection.createStatement();
             statement.execute(sqlCommandDrop);
             connection.commit();
         } catch (SQLException e) {
@@ -54,8 +55,8 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void saveUser(String name, String lastName, byte age) {
-        try (PreparedStatement statement = connection.prepareStatement(sqlCommandAddNew)) {
-
+        try (Connection connection = Util.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sqlCommandAddNew);
             statement.setLong(1, 1L);
             statement.setString(2, name);
             statement.setString(3, lastName);
@@ -76,7 +77,8 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void removeUserById(long id) {
-        try (Statement statement = connection.createStatement ()) {
+        try (Connection connection = Util.getConnection()) {
+            Statement statement = connection.createStatement();
             statement.execute(sqlCommandDeleteWhere + id);
             connection.commit();
         } catch (SQLException e) {
@@ -93,7 +95,8 @@ public class UserDaoJDBCImpl implements UserDao {
 
         List<User> list = new ArrayList<>();
 
-        try (Statement statement = connection.createStatement() ) {
+        try (Connection connection = Util.getConnection()) {
+            Statement statement = connection.createStatement();
 
             ResultSet resultSet  = statement.executeQuery(sqlCommandGetAll);
             while (resultSet.next()) {
@@ -119,7 +122,8 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() {
-        try (Statement statement = connection.createStatement()) {
+        try (Connection connection = Util.getConnection()) {
+            Statement statement = connection.createStatement();
             statement.execute(sqlCommandTruncate);
             connection.commit();
         } catch (SQLException e) {

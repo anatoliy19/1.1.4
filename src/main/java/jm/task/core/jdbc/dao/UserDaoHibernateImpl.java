@@ -12,7 +12,7 @@ import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
 
-    private final static String sqlCommandCreate = "CREATE TABLE users (id bigint, " +
+    private final static String sqlCommandCreate = "CREATE TABLE IF NOT EXISTS users (id bigint, " +
             "name varchar(100), lastName varchar(100), age tinyint)";
     private final static String sqlCommandAddNew = "INSERT INTO users (id, name, lastName, age) VALUES (?,?,?,?)";
     private final static String sqlCommandDrop = "DROP TABLE IF EXISTS users;";
@@ -23,7 +23,6 @@ public class UserDaoHibernateImpl implements UserDao {
     public UserDaoHibernateImpl() {
 
     }
-
 
     @Override
     public void createUsersTable() {
