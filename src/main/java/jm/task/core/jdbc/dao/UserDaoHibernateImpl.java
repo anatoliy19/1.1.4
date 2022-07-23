@@ -4,6 +4,7 @@ import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import javax.persistence.TypedQuery;
@@ -12,6 +13,7 @@ import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
 
+    private final SessionFactory sessionFactory = Util.getSessionFactory();
     private final static String sqlCommandCreate = "CREATE TABLE IF NOT EXISTS users (id bigint, " +
             "name varchar(100), lastName varchar(100), age tinyint)";
     private final static String sqlCommandAddNew = "INSERT INTO users (id, name, lastName, age) VALUES (?,?,?,?)";
@@ -79,10 +81,21 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public List<User> getAllUsers() {
-        List<User> users = new ArrayList<>();
-        TypedQuery<User> query =  Util.getSessionFactory().openSession().createSQLQuery(sqlCommandGetAll);
-        return query.getResultList();
+        List<User> list = new ArrayList<>();
+        Transaction transaction = null;
+        try (Session session = sessionFactory.getCurrentSession()) {
+            transaction = session.beginTransaction();
+            list = session.createQuery("from User").getResultList();
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction != null) {
+                transaction.rollback();
+            }
+        }
+        return list;
     }
+
 
     @Override
     public void cleanUsersTable() {

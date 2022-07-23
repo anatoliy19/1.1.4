@@ -1,10 +1,18 @@
 package jm.task.core.jdbc.model;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Table
+import javax.persistence.*;
+import java.io.Serializable;
+
+
+@Entity
+@Getter
+@Setter
+@ToString
+@Table(name="users")
 public class User {
     @Id
     private Long id;
